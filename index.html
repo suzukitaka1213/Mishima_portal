@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#0a1628"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="MISHIMA PORTAL"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<title>MISHIMA PORTAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,900;1,900&family=Barlow:wght@400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0a1628;
+  --c01:#4a9eff;
+  --c02:#10b97a;
+  --c03:#f59e0b;
+  --c04:#ef4444;
+  --c05:#a855f7;
+  --c06:#84cc16;
+  --c07:#f97316;
+  --c08:#14b8a6;
+  --c09:#64748b;
+  --c10:#ec4899;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:#f4f4f4;color:var(--navy);min-height:100vh;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+
+/* ════════════════════════════
+   OVERLAY
+════════════════════════════ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.open{opacity:1;pointer-events:all}
+
+/* ════════════════════════════
+   SIDE MENU
+════════════════════════════ */
+.sidemenu{position:fixed;top:0;left:0;bottom:0;width:280px;background:var(--navy);z-index:300;transform:translateX(-100%);transition:transform .32s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.sidemenu.open{transform:translateX(0)}
+.sm-header{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between}
+.sm-logo{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.08em;color:#fff}
+.sm-logo em{color:var(--c01);font-style:normal}
+.sm-close{width:32px;height:32px;display:grid;place-items:center;color:rgba(255,255,255,.4);font-size:20px;cursor:pointer;transition:color .2s}
+.sm-close:hover{color:#fff}
+.sm-nav{flex:1;padding:16px 0;overflow-y:auto}
+.sm-label{font-size:8px;font-weight:700;letter-spacing:.3em;color:rgba(255,255,255,.25);text-transform:uppercase;padding:16px 24px 8px;font-family:'DM Mono',monospace}
+.sm-item{display:flex;align-items:center;gap:14px;padding:13px 24px;text-decoration:none;color:rgba(255,255,255,.6);transition:all .2s;cursor:pointer;border-left:3px solid transparent}
+.sm-item:hover{color:#fff;background:rgba(255,255,255,.05);border-left-color:var(--accent)}
+.sm-num{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.25);flex-shrink:0;letter-spacing:.1em}
+.sm-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sm-name{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.sm-footer{padding:20px 24px;border-top:1px solid rgba(255,255,255,.08)}
+.sm-status{display:flex;align-items:center;gap:7px;font-size:8px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.25);text-transform:uppercase;font-family:'DM Mono',monospace}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0}
+
+/* ════════════════════════════
+   HEADER
+════════════════════════════ */
+header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:3px solid var(--navy);display:grid;grid-template-columns:72px 1fr auto}
+.hd-burger{display:grid;place-items:center;border-right:3px solid var(--navy);cursor:pointer;transition:background .2s;min-height:68px}
+.hd-burger:hover{background:#f4f4f4}
+.burger-icon{display:flex;flex-direction:column;gap:6px}
+.burger-icon span{display:block;width:24px;height:3px;background:var(--navy)}
+.hd-logo-wrap{padding:0 28px;display:flex;align-items:center}
+.hd-logo{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;letter-spacing:.1em;color:var(--navy);text-transform:uppercase}
+.hd-logo em{color:var(--c01);font-style:normal}
+.hd-right{display:flex;align-items:stretch;border-left:3px solid var(--navy)}
+.hd-clock-wrap{padding:0 24px;border-right:1px solid #eee;display:flex;flex-direction:column;justify-content:center;text-align:right;min-width:130px}
+#hd-time{font-size:22px;font-weight:900;font-family:'DM Mono',monospace;color:var(--navy);letter-spacing:.04em;line-height:1}
+#hd-date{font-size:8px;font-weight:700;letter-spacing:.18em;color:#bbb;text-transform:uppercase;margin-top:4px}
+.hd-weather{padding:0 22px;border-right:1px solid #eee;display:flex;align-items:center;gap:12px;min-width:140px}
+.weather-icon{font-size:26px;line-height:1}
+.weather-info{}
+#weather-temp{font-size:18px;font-weight:900;font-family:'DM Mono',monospace;color:var(--navy);line-height:1}
+#weather-desc{font-size:8px;font-weight:700;letter-spacing:.15em;color:#bbb;text-transform:uppercase;margin-top:3px}
+.hd-live{padding:0 20px;display:flex;align-items:center;gap:7px;font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--navy);text-transform:uppercase}
+
+/* ════════════════════════════
+   HERO
+════════════════════════════ */
+.hero{background:#f0efea;border-bottom:3px solid var(--navy);padding:56px 40px 48px;position:relative;overflow:hidden;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* グリッドパターン */
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(to right,rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,0,0,.05) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+/* 斜め帯装飾 */
+.hero-stripe{position:absolute;pointer-events:none}
+.hs1{top:-20%;right:32%;width:80px;height:150%;background:#e63022;opacity:.85;transform:rotate(-12deg);z-index:1}
+.hs2{top:-20%;right:24%;width:14px;height:150%;background:#a3e635;opacity:.9;transform:rotate(-12deg);z-index:1}
+.hs3{top:-20%;right:18%;width:40px;height:150%;background:#1a1a1a;opacity:.7;transform:rotate(-12deg);z-index:1}
+.hs4{top:-20%;right:14%;width:8px;height:150%;background:#c9a227;opacity:.8;transform:rotate(-12deg);z-index:1}
+.hs5{top:-20%;left:22%;width:6px;height:150%;background:#a3e635;opacity:.5;transform:rotate(-12deg);z-index:1}
+.hs6{top:-20%;left:16%;width:30px;height:150%;background:#888;opacity:.18;transform:rotate(-12deg);z-index:1}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:16px;position:relative;z-index:2}
+.eyebrow-line{width:32px;height:2px;background:var(--c01)}
+.eyebrow-txt{font-size:9px;font-weight:700;letter-spacing:.3em;color:var(--c01);text-transform:uppercase;font-family:'DM Mono',monospace}
+.hero-title{position:relative;z-index:2;line-height:.82;text-align:center;transform:scaleY(.92);transform-origin:center}
+.hero-title-line{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-style:italic;font-size:clamp(70px,12vw,160px);letter-spacing:-.03em;text-transform:uppercase}
+.hero-title-line.fill{color:var(--navy)}
+.hero-title-line.outline{color:transparent;-webkit-text-stroke:3px var(--navy)}
+.hero-title-line.outline em{color:var(--c01);-webkit-text-stroke:0;font-style:normal}
+
+/* ════════════════════════════
+   SEARCH
+════════════════════════════ */
+.search-section{background:#fff;border-bottom:2px solid var(--navy);padding:16px 40px}
+.search-label{font-size:8px;font-weight:700;letter-spacing:.3em;color:#bbb;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:8px}
+.search-inner{display:flex;align-items:center;border:2px solid var(--navy);overflow:hidden;max-width:640px}
+.search-icon{padding:12px 16px;font-size:16px;color:#bbb;border-right:1px solid #eee;flex-shrink:0}
+#search{flex:1;padding:12px 16px;font-size:12px;font-family:'DM Mono',monospace;color:var(--navy);background:transparent;border:none;outline:none;letter-spacing:.04em}
+#search::placeholder{color:#ccc}
+.search-btn{padding:12px 20px;background:var(--navy);color:#fff;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background .2s;border:none;font-family:'Barlow',sans-serif}
+.search-btn:hover{background:#1a3050}
+
+/* ════════════════════════════
+   FILTER TABS
+════════════════════════════ */
+.ftabs{display:flex;align-items:stretch;border-bottom:1px solid #e0e0e0;background:#fafafa;overflow-x:auto}
+.ftab{padding:11px 18px;font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#bbb;border-right:1px solid #eee;display:flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap;position:relative;transition:color .2s;font-family:'Barlow',sans-serif}
+.ftab:hover{color:var(--navy)}
+.ftab.active{color:var(--navy);background:#fff}
+.ftab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2.5px;background:var(--navy)}
+.fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* ════════════════════════════
+   MAIN
+════════════════════════════ */
+main{background:#f4f4f4;padding:14px;display:flex;flex-direction:column;gap:20px}
+#no-match{display:none;text-align:center;padding:60px;font-size:11px;font-weight:700;letter-spacing:.25em;color:#bbb;text-transform:uppercase;background:#fff;border:1px dashed #ddd}
+
+/* ════════════════════════════
+   CATEGORY
+════════════════════════════ */
+.cat{background:#fff;overflow:hidden;border:1px solid #e0e0e0}
+.cat.hidden{display:none}
+
+.cat-hdr{position:relative;padding:0 28px;display:flex;align-items:center;justify-content:space-between;min-height:92px;border-top:3px solid var(--accent);overflow:hidden}
+.cat-bg-num{position:absolute;left:-6px;top:50%;transform:translateY(-50%);font-family:'Barlow Condensed',sans-serif;font-size:130px;font-weight:900;font-style:italic;letter-spacing:-.06em;line-height:1;pointer-events:none;z-index:0;color:var(--accent-pale)}
+.cat-content{position:relative;z-index:1;display:flex;align-items:center;gap:20px}
+.cat-sq{width:58px;height:58px;display:grid;place-items:center;flex-shrink:0;background:var(--accent)}
+.cat-sq-n{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:#fff;letter-spacing:-.02em}
+.cat-eye{font-size:8px;font-weight:700;letter-spacing:.35em;text-transform:uppercase;font-family:'DM Mono',monospace;color:var(--accent);margin-bottom:5px}
+.cat-name{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;line-height:1;color:var(--navy)}
+.cat-right{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.cat-sub{font-size:8px;letter-spacing:.18em;color:#bbb;text-transform:uppercase;font-family:'DM Mono',monospace}
+
+/* カテゴリ別カラー */
+.cat[data-cat="c01"]{--accent:var(--c01);--accent-pale:#d8eeff;--accent-bg:#f3f9ff}
+.cat[data-cat="c02"]{--accent:var(--c02);--accent-pale:#ccf5e4;--accent-bg:#f2fdf8}
+.cat[data-cat="c03"]{--accent:var(--c03);--accent-pale:#fdeec8;--accent-bg:#fffcf0}
+.cat[data-cat="c04"]{--accent:var(--c04);--accent-pale:#fecaca;--accent-bg:#fff5f5}
+.cat[data-cat="c05"]{--accent:var(--c05);--accent-pale:#e8d4ff;--accent-bg:#fdf5ff}
+.cat[data-cat="c06"]{--accent:var(--c06);--accent-pale:#d9f99d;--accent-bg:#f7fee7}
+.cat[data-cat="c07"]{--accent:var(--c07);--accent-pale:#fed7aa;--accent-bg:#fff7ed}
+.cat[data-cat="c08"]{--accent:var(--c08);--accent-pale:#c4f0ec;--accent-bg:#f0fdfb}
+.cat[data-cat="c09"]{--accent:var(--c09);--accent-pale:#dde1e7;--accent-bg:#f8f9fa}
+.cat[data-cat="c10"]{--accent:var(--c10);--accent-pale:#fbcfe8;--accent-bg:#fdf2f8}
+.cat-hdr{background:var(--accent-bg)}
+
+/* ════════════════════════════
+   LINK CARDS
+════════════════════════════ */
+.links{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.lk{display:block;padding:20px 24px;border-right:1px solid #f0f0f0;border-top:1px solid #f0f0f0;background:#fff;text-decoration:none;color:var(--navy);position:relative;overflow:hidden;transition:background .18s}
+.lk.hidden{display:none}
+.lk::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .26s cubic-bezier(.4,0,.2,1)}
+.lk::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2.5px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .26s cubic-bezier(.4,0,.2,1)}
+.lk:hover{background:var(--accent-bg)}
+.lk:hover::before,.lk:hover::after{transform:scaleX(1)}
+.lk:hover .lk-arr{opacity:1;transform:translate(0,0)}
+.lk-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+.lk-name{font-size:13px;font-weight:900;color:var(--navy);text-transform:uppercase;letter-spacing:.02em;font-family:'Barlow',sans-serif}
+.lk-arr{font-size:16px;color:var(--accent);opacity:0;transform:translate(-5px,-5px);transition:all .22s;flex-shrink:0}
+.lk-dom{font-size:8px;font-family:'DM Mono',monospace;color:#ccc;letter-spacing:.08em}
+
+/* ════════════════════════════
+   FOOTER
+════════════════════════════ */
+footer{background:var(--navy);padding:36px 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px}
+.ft-brand{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;font-style:italic;color:var(--c01);letter-spacing:.04em;margin-bottom:8px}
+.ft-copy{font-size:11px;color:#3a5570;line-height:1.7}
+.ft-label{font-size:8px;font-weight:700;letter-spacing:.25em;color:#2a4060;text-transform:uppercase;margin-bottom:10px;font-family:'DM Mono',monospace}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.ft-links a{font-size:11px;color:#3a5570;text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:8px}
+.ft-links a:hover{color:#fff}
+.ft-links .fl-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ft-meta{font-family:'DM Mono',monospace;font-size:9px;color:#2a4060;line-height:2.4;text-align:right}
+.ft-meta em{color:var(--c01);font-style:normal}
+
+@media(max-width:640px){
+  .hero{padding:28px 20px 24px}
+  .hero-title-line{font-size:clamp(60px,18vw,100px)}
+  .search-section{padding:14px 20px}
+  footer{grid-template-columns:1fr;padding:28px 20px}
+  .ft-meta{text-align:left}
+  header{grid-template-columns:56px 1fr auto}
+  .hd-weather{display:none}
+}
+/* ════════════════════════════
+   LOCK SCREEN
+════════════════════════════ */
+.lock{position:fixed;inset:0;z-index:9999;background:#f0efea;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.lock.hidden{display:none}
+/* 斜め帯（ヒーローと同じ） */
+.lock-stripe{position:absolute;pointer-events:none}
+.ls1{top:-20%;right:32%;width:80px;height:150%;background:#e63022;opacity:.85;transform:rotate(-12deg)}
+.ls2{top:-20%;right:24%;width:14px;height:150%;background:#a3e635;opacity:.9;transform:rotate(-12deg)}
+.ls3{top:-20%;right:18%;width:40px;height:150%;background:#1a1a1a;opacity:.7;transform:rotate(-12deg)}
+.ls4{top:-20%;right:14%;width:8px;height:150%;background:#c9a227;opacity:.8;transform:rotate(-12deg)}
+.ls5{top:-20%;left:22%;width:6px;height:150%;background:#a3e635;opacity:.5;transform:rotate(-12deg)}
+.ls6{top:-20%;left:16%;width:30px;height:150%;background:#888;opacity:.18;transform:rotate(-12deg)}
+/* グリッド */
+.lock::before{content:'';position:absolute;inset:0;background-image:linear-gradient(to right,rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,0,0,.05) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.lock-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:32px}
+.lock-logo{font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,10vw,96px);font-weight:900;font-style:italic;line-height:.88;text-align:center}
+.lock-logo .fill{display:block;color:var(--navy)}
+.lock-logo .outline{display:block;color:transparent;-webkit-text-stroke:2.5px var(--navy)}
+.lock-logo .outline em{color:var(--c01);-webkit-text-stroke:0;font-style:normal}
+.lock-form{display:flex;flex-direction:column;align-items:center;gap:12px;width:300px}
+.lock-label{font-size:8px;font-weight:700;letter-spacing:.3em;color:#bbb;text-transform:uppercase;font-family:'DM Mono',monospace;align-self:flex-start}
+.lock-input-wrap{display:flex;align-items:stretch;width:100%;border:2px solid var(--navy);overflow:hidden}
+#lock-input{flex:1;padding:12px 16px;font-size:13px;font-family:'DM Mono',monospace;color:var(--navy);background:#fff;border:none;outline:none;letter-spacing:.06em}
+#lock-input::placeholder{color:#ccc}
+.lock-btn{padding:12px 18px;background:var(--navy);color:#fff;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border:none;font-family:'Barlow',sans-serif;transition:background .2s;white-space:nowrap}
+.lock-btn:hover{background:#1a3050}
+.lock-error{font-size:9px;font-weight:700;letter-spacing:.15em;color:#ef4444;text-transform:uppercase;font-family:'DM Mono',monospace;opacity:0;transition:opacity .2s}
+.lock-error.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div class="lock" id="lock-screen">
+  <div class="lock-stripe ls1"></div>
+  <div class="lock-stripe ls2"></div>
+  <div class="lock-stripe ls3"></div>
+  <div class="lock-stripe ls4"></div>
+  <div class="lock-stripe ls5"></div>
+  <div class="lock-stripe ls6"></div>
+  <div class="lock-inner">
+    <div class="lock-logo">
+      <span class="fill">MISHIMA</span>
+      <span class="outline">PORT<em>AL.</em></span>
+    </div>
+    <div class="lock-form">
+      <div class="lock-label">// Password Required</div>
+      <div class="lock-input-wrap">
+        <input id="lock-input" type="password" placeholder="Enter password..." autocomplete="off"/>
+        <button class="lock-btn" id="lock-btn">Enter ↗</button>
+      </div>
+      <div class="lock-error" id="lock-error">⚠ Incorrect password</div>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- SIDE MENU -->
+<nav class="sidemenu" id="sidemenu">
+  <div class="sm-header">
+    <div class="sm-logo">MISHIMA <em>PORTAL</em></div>
+    <div class="sm-close" id="sm-close">✕</div>
+  </div>
+  <div class="sm-nav">
+    <div class="sm-label">Categories</div>
+    <a class="sm-item" href="#c01" style="--accent:var(--c01)"><span class="sm-num">01</span><span class="sm-dot" style="background:var(--c01)"></span><span class="sm-name">Master</span></a>
+    <a class="sm-item" href="#c02" style="--accent:var(--c02)"><span class="sm-num">02</span><span class="sm-dot" style="background:var(--c02)"></span><span class="sm-name">List</span></a>
+    <a class="sm-item" href="#c03" style="--accent:var(--c03)"><span class="sm-num">03</span><span class="sm-dot" style="background:var(--c03)"></span><span class="sm-name">Shortcut</span></a>
+    <a class="sm-item" href="#c04" style="--accent:var(--c04)"><span class="sm-num">04</span><span class="sm-dot" style="background:var(--c04)"></span><span class="sm-name">Calendar</span></a>
+    <a class="sm-item" href="#c05" style="--accent:var(--c05)"><span class="sm-num">05</span><span class="sm-dot" style="background:var(--c05)"></span><span class="sm-name">Tools</span></a>
+    <a class="sm-item" href="#c06" style="--accent:var(--c06)"><span class="sm-num">06</span><span class="sm-dot" style="background:var(--c06)"></span><span class="sm-name">SMART LIFE AO</span></a>
+    <a class="sm-item" href="#c07" style="--accent:var(--c07)"><span class="sm-num">07</span><span class="sm-dot" style="background:var(--c07)"></span><span class="sm-name">Audit</span></a>
+    <a class="sm-item" href="#c08" style="--accent:var(--c08)"><span class="sm-num">08</span><span class="sm-dot" style="background:var(--c08)"></span><span class="sm-name">Labor</span></a>
+    <a class="sm-item" href="#c09" style="--accent:var(--c09)"><span class="sm-num">09</span><span class="sm-dot" style="background:var(--c09)"></span><span class="sm-name">AI</span></a>
+    <a class="sm-item" href="#c10" style="--accent:var(--c10)"><span class="sm-num">10</span><span class="sm-dot" style="background:var(--c10)"></span><span class="sm-name">Misc</span></a>
+  </div>
+  <div class="sm-footer">
+    <div class="sm-status"><span class="live-dot"></span>System Live — Mishima, JP</div>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <div class="hd-burger" id="burger">
+    <div class="burger-icon"><span></span><span></span><span></span></div>
+  </div>
+  <div class="hd-logo-wrap">
+    <div class="hd-logo">MISHIMA <em>PORTAL</em></div>
+  </div>
+  <div class="hd-right">
+    <div class="hd-clock-wrap">
+      <span id="hd-time">--:--</span>
+      <span id="hd-date">--- -- --</span>
+    </div>
+    <div class="hd-weather">
+      <div class="weather-icon" id="weather-icon">--</div>
+      <div class="weather-info">
+        <div id="weather-temp">--°C</div>
+        <div id="weather-desc">Loading</div>
+      </div>
+    </div>
+    <div class="hd-live"><span class="live-dot"></span>Live</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-stripe hs1"></div>
+  <div class="hero-stripe hs2"></div>
+  <div class="hero-stripe hs3"></div>
+  <div class="hero-stripe hs4"></div>
+  <div class="hero-stripe hs5"></div>
+  <div class="hero-stripe hs6"></div>
+  <div class="hero-eyebrow">
+    <div class="eyebrow-line"></div>
+    <div class="eyebrow-txt">Personal Ops Dashboard — Mishima, JP</div>
+  </div>
+  <h1 class="hero-title">
+    <span class="hero-title-line fill">MISHIMA</span>
+    <span class="hero-title-line outline">PORT<em>AL.</em></span>
+  </h1>
+</section>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-label">// Search Engine — Type to Filter</div>
+  <div class="search-inner">
+    <div class="search-icon">⌕</div>
+    <input id="search" type="text" placeholder="filter links..." autocomplete="off"/>
+    <button class="search-btn">Search ↗</button>
+  </div>
+</div>
+
+<!-- FILTER TABS -->
+<div class="ftabs">
+  <div class="ftab active" data-filter="all">All</div>
+  <div class="ftab" data-filter="c01"><span class="fdot" style="background:var(--c01)"></span>Master</div>
+  <div class="ftab" data-filter="c02"><span class="fdot" style="background:var(--c02)"></span>List</div>
+  <div class="ftab" data-filter="c03"><span class="fdot" style="background:var(--c03)"></span>Shortcut</div>
+  <div class="ftab" data-filter="c04"><span class="fdot" style="background:var(--c04)"></span>Calendar</div>
+  <div class="ftab" data-filter="c05"><span class="fdot" style="background:var(--c05)"></span>Tools</div>
+  <div class="ftab" data-filter="c06"><span class="fdot" style="background:var(--c06)"></span>SMART LIFE AO</div>
+  <div class="ftab" data-filter="c07"><span class="fdot" style="background:var(--c07)"></span>Audit</div>
+  <div class="ftab" data-filter="c08"><span class="fdot" style="background:var(--c08)"></span>Labor</div>
+  <div class="ftab" data-filter="c09"><span class="fdot" style="background:var(--c09)"></span>AI</div>
+  <div class="ftab" data-filter="c10"><span class="fdot" style="background:var(--c10)"></span>Misc</div>
+</div>
+
+<div id="no-match">— NO RESULTS FOUND —</div>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- 01 MASTER -->
+  <div class="cat" data-cat="c01" id="c01">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">01</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">01</div></div>
+        <div><div class="cat-eye">// 01 — Master</div><div class="cat-name">MASTER</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">Core Documents</div></div>
+    </div>
+    <div class="links" id="links-c01">
+      <a class="lk" href="#" data-name="静岡 Branch">
+        <div class="lk-top"><div class="lk-name">静岡 Branch</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="SL 三島 BASE">
+        <div class="lk-top"><div class="lk-name">SL 三島 BASE</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="SMARTLIFE AO 静岡三島校">
+        <div class="lk-top"><div class="lk-name">SMARTLIFE AO 静岡三島校</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 02 LIST -->
+  <div class="cat" data-cat="c02" id="c02">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">02</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">02</div></div>
+        <div><div class="cat-eye">// 02 — List</div><div class="cat-name">LIST</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">References</div></div>
+    </div>
+    <div class="links" id="links-c02">
+      <a class="lk" href="#" data-name="FAS 機会損失相談">
+        <div class="lk-top"><div class="lk-name">FAS 機会損失相談</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="AO 生リスト">
+        <div class="lk-top"><div class="lk-name">AO 生リスト</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="イベント枠リスト">
+        <div class="lk-top"><div class="lk-name">イベント枠リスト</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 03 SHORTCUT -->
+  <div class="cat" data-cat="c03" id="c03">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">03</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">03</div></div>
+        <div><div class="cat-eye">// 03 — Shortcut</div><div class="cat-name">SHORTCUT</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">Quick Access</div></div>
+    </div>
+    <div class="links" id="links-c03">
+      <a class="lk" href="#" data-name="日次報告">
+        <div class="lk-top"><div class="lk-name">日次報告</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="GoogleMeet">
+        <div class="lk-top"><div class="lk-name">GoogleMeet</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 04 CALENDAR -->
+  <div class="cat" data-cat="c04" id="c04">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">04</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">04</div></div>
+        <div><div class="cat-eye">// 04 — Calendar</div><div class="cat-name">CALENDAR</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">Schedule</div></div>
+    </div>
+    <div class="links" id="links-c04">
+      <a class="lk" href="#" data-name="倶楽部カレンダー">
+        <div class="lk-top"><div class="lk-name">倶楽部カレンダー</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="地域イベントカレンダー">
+        <div class="lk-top"><div class="lk-name">地域イベントカレンダー</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 05 TOOLS -->
+  <div class="cat" data-cat="c05" id="c05">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">05</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">05</div></div>
+        <div><div class="cat-eye">// 05 — Tools</div><div class="cat-name">TOOLS</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">Apps / Services</div></div>
+    </div>
+    <div class="links" id="links-c05">
+      <a class="lk" href="#" data-name="Presence">
+        <div class="lk-top"><div class="lk-name">Presence</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="Local Cast">
+        <div class="lk-top"><div class="lk-name">Local Cast</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 06 SMART LIFE AO -->
+  <div class="cat" data-cat="c06" id="c06">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">06</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">06</div></div>
+        <div><div class="cat-eye">// 06 — SMART LIFE AO</div><div class="cat-name">SMART LIFE AO</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">静岡三島校</div></div>
+    </div>
+    <div class="links" id="links-c06">
+      <a class="lk" href="#" data-name="学びの図書館 書籍リスト">
+        <div class="lk-top"><div class="lk-name">学びの図書館 書籍リスト</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="ラジオ">
+        <div class="lk-top"><div class="lk-name">ラジオ</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 07 AUDIT -->
+  <div class="cat" data-cat="c07" id="c07">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">07</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">07</div></div>
+        <div><div class="cat-eye">// 07 — Audit</div><div class="cat-name">AUDIT</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">Compliance</div></div>
+    </div>
+    <div class="links" id="links-c07">
+      <a class="lk" href="#" data-name="監査項目">
+        <div class="lk-top"><div class="lk-name">監査項目</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="誓約書">
+        <div class="lk-top"><div class="lk-name">誓約書</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="ロープレ提出先">
+        <div class="lk-top"><div class="lk-name">ロープレ提出先</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="AI 自主監査">
+        <div class="lk-top"><div class="lk-name">AI 自主監査</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 08 LABOR -->
+  <div class="cat" data-cat="c08" id="c08">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">08</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">08</div></div>
+        <div><div class="cat-eye">// 08 — Labor</div><div class="cat-name">LABOR</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">HR / Attendance</div></div>
+    </div>
+    <div class="links" id="links-c08">
+      <a class="lk" href="#" data-name="シフト希望">
+        <div class="lk-top"><div class="lk-name">シフト希望</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="シフト">
+        <div class="lk-top"><div class="lk-name">シフト</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="ジョブカン">
+        <div class="lk-top"><div class="lk-name">ジョブカン</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="SmartHR">
+        <div class="lk-top"><div class="lk-name">SmartHR</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="カオナビ">
+        <div class="lk-top"><div class="lk-name">カオナビ</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 09 AI -->
+  <div class="cat" data-cat="c09" id="c09">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">09</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">09</div></div>
+        <div><div class="cat-eye">// 09 — AI</div><div class="cat-name">AI</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">AI / LLM</div></div>
+    </div>
+    <div class="links" id="links-c09">
+      <a class="lk" href="#" data-name="ChatGPT">
+        <div class="lk-top"><div class="lk-name">ChatGPT</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="Gemini">
+        <div class="lk-top"><div class="lk-name">Gemini</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="Notebook LM">
+        <div class="lk-top"><div class="lk-name">Notebook LM</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="Claude">
+        <div class="lk-top"><div class="lk-name">Claude</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="Canva">
+        <div class="lk-top"><div class="lk-name">Canva</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+      <a class="lk" href="#" data-name="Genspark">
+        <div class="lk-top"><div class="lk-name">Genspark</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 10 MISC -->
+  <div class="cat" data-cat="c10" id="c10">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">10</div>
+      <div class="cat-content">
+        <div class="cat-sq"><div class="cat-sq-n">10</div></div>
+        <div><div class="cat-eye">// 10 — Misc</div><div class="cat-name">MISC</div></div>
+      </div>
+      <div class="cat-right"><div class="cat-sub">Others</div></div>
+    </div>
+    <div class="links" id="links-c10">
+      <a class="lk" href="#" data-name="AI に関するニュースページ">
+        <div class="lk-top"><div class="lk-name">AI に関するニュースページ</div><div class="lk-arr">↗</div></div>
+        <div class="lk-dom">URL未設定</div>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div>
+    <div class="ft-brand">MISHIMA PORTAL.</div>
+    <div class="ft-copy">パーソナル・オペレーション・ダッシュボード。<br>三島市発、日々の作業を加速するデジタル拠点。</div>
+  </div>
+  <div>
+    <div class="ft-label">// Quick Jump</div>
+    <ul class="ft-links">
+      <li><a href="#c01"><span class="fl-dot" style="background:var(--c01)"></span>01 — Master</a></li>
+      <li><a href="#c02"><span class="fl-dot" style="background:var(--c02)"></span>02 — List</a></li>
+      <li><a href="#c03"><span class="fl-dot" style="background:var(--c03)"></span>03 — Shortcut</a></li>
+      <li><a href="#c04"><span class="fl-dot" style="background:var(--c04)"></span>04 — Calendar</a></li>
+      <li><a href="#c05"><span class="fl-dot" style="background:var(--c05)"></span>05 — Tools</a></li>
+      <li><a href="#c06"><span class="fl-dot" style="background:var(--c06)"></span>06 — SMART LIFE AO</a></li>
+      <li><a href="#c07"><span class="fl-dot" style="background:var(--c07)"></span>07 — Audit</a></li>
+      <li><a href="#c08"><span class="fl-dot" style="background:var(--c08)"></span>08 — Labor</a></li>
+      <li><a href="#c09"><span class="fl-dot" style="background:var(--c09)"></span>09 — AI</a></li>
+      <li><a href="#c10"><span class="fl-dot" style="background:var(--c10)"></span>10 — Misc</a></li>
+    </ul>
+  </div>
+  <div class="ft-meta">
+    MISHIMA, SHIZUOKA<br>
+    VOL.I — 2026<br>
+    <em>// MISHIMA PORTAL</em>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* ── ハンバーガーメニュー ── */
+const burger=document.getElementById('burger');
+const sidemenu=document.getElementById('sidemenu');
+const overlay=document.getElementById('overlay');
+const smClose=document.getElementById('sm-close');
+function openMenu(){sidemenu.classList.add('open');overlay.classList.add('open')}
+function closeMenu(){sidemenu.classList.remove('open');overlay.classList.remove('open')}
+burger.addEventListener('click',openMenu);
+smClose.addEventListener('click',closeMenu);
+overlay.addEventListener('click',closeMenu);
+sidemenu.querySelectorAll('.sm-item').forEach(a=>a.addEventListener('click',closeMenu));
+
+/* ── 時計 ── */
+const WEEK=['日','月','火','水','木','金','土'];
+function tick(){
+  const n=new Date();
+  const p=v=>String(v).padStart(2,'0');
+  document.getElementById('hd-time').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  document.getElementById('hd-date').textContent=`${n.getFullYear()}.${p(n.getMonth()+1)}.${p(n.getDate())} (${WEEK[n.getDay()]})`;
+}
+tick();setInterval(tick,1000);
+
+/* ── 天気（Open-Meteo 三島市） ── */
+const WMO={
+  0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+  45:'🌫️',48:'🌫️',
+  51:'🌦️',53:'🌦️',55:'🌧️',
+  61:'🌧️',63:'🌧️',65:'🌧️',
+  71:'🌨️',73:'🌨️',75:'🌨️',
+  80:'🌦️',81:'🌧️',82:'🌧️',
+  95:'⛈️',96:'⛈️',99:'⛈️'
+};
+const WMO_DESC={
+  0:'快晴',1:'晴れ',2:'薄曇り',3:'曇り',
+  45:'霧',48:'霧',
+  51:'小雨',53:'雨',55:'雨',
+  61:'小雨',63:'雨',65:'大雨',
+  71:'小雪',73:'雪',75:'大雪',
+  80:'にわか雨',81:'雨',82:'大雨',
+  95:'雷雨',96:'雷雨',99:'雷雨'
+};
+async function fetchWeather(){
+  try{
+    const url='https://api.open-meteo.com/v1/forecast?latitude=35.1167&longitude=138.9167&current=temperature_2m,weathercode&timezone=Asia%2FTokyo';
+    const res=await fetch(url);
+    const data=await res.json();
+    const temp=Math.round(data.current.temperature_2m);
+    const code=data.current.weathercode;
+    document.getElementById('weather-icon').textContent=WMO[code]||'🌡️';
+    document.getElementById('weather-temp').textContent=`${temp}°C`;
+    document.getElementById('weather-desc').textContent=WMO_DESC[code]||'--';
+  }catch(e){
+    document.getElementById('weather-icon').textContent='--';
+    document.getElementById('weather-temp').textContent='--°C';
+    document.getElementById('weather-desc').textContent='Error';
+  }
+}
+fetchWeather();setInterval(fetchWeather,10*60*1000);
+
+
+/* ── フィルタータブ ── */
+document.querySelectorAll('.ftab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const f=tab.dataset.filter;
+    document.querySelectorAll('.cat').forEach(cat=>{
+      cat.classList.toggle('hidden',f!=='all'&&cat.dataset.cat!==f);
+    });
+    document.getElementById('search').value='';
+    document.querySelectorAll('.lk').forEach(lk=>lk.classList.remove('hidden'));
+    document.getElementById('no-match').style.display='none';
+  });
+});
+
+/* ── 検索 ── */
+document.getElementById('search').addEventListener('input',function(){
+  const q=this.value.trim().toLowerCase();
+  let vis=0;
+  document.querySelectorAll('.lk').forEach(lk=>{
+    const name=lk.dataset.name.toLowerCase();
+    const dom=lk.querySelector('.lk-dom').textContent.toLowerCase();
+    const show=!q||name.includes(q)||dom.includes(q);
+    lk.classList.toggle('hidden',!show);
+    if(show)vis++;
+  });
+  document.querySelectorAll('.cat').forEach(cat=>{
+    const has=[...cat.querySelectorAll('.lk')].some(l=>!l.classList.contains('hidden'));
+    cat.classList.toggle('hidden',!has);
+  });
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.ftab[data-filter="all"]').classList.add('active');
+  document.getElementById('no-match').style.display=vis===0&&q?'block':'none';
+});
+/* ── ロック画面（SessionStorage） ── */
+const PASS='mishima1124';
+const SESSION_KEY='mishima_portal_auth';
+const lockScreen=document.getElementById('lock-screen');
+const lockInput=document.getElementById('lock-input');
+const lockBtn=document.getElementById('lock-btn');
+const lockError=document.getElementById('lock-error');
+
+function unlock(){
+  lockScreen.classList.add('hidden');
+  sessionStorage.setItem(SESSION_KEY,'1');
+}
+function tryUnlock(){
+  if(lockInput.value===PASS){
+    unlock();
+  }else{
+    lockError.classList.add('show');
+    lockInput.value='';
+    lockInput.focus();
+    setTimeout(()=>lockError.classList.remove('show'),2000);
+  }
+}
+// セッション確認
+if(sessionStorage.getItem(SESSION_KEY)==='1'){
+  unlock();
+}
+lockBtn.addEventListener('click',tryUnlock);
+lockInput.addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();});
+lockInput.focus();
+/* ── Service Worker 登録 ── */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('service-worker.js')
+      .catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
