@@ -28,6 +28,8 @@
   --c09:#64748b;
   --c10:#ec4899;
   --c11:#0ea5e9;
+  --c12:#8b5cf6;
+  --c13:#f43f5e;
 }
 html{scroll-behavior:smooth;overflow-x:hidden}
 body{font-family:'Barlow',sans-serif;background:#f4f4f4;color:var(--navy);min-height:100vh;overflow-x:hidden;padding-top:env(safe-area-inset-top)}
@@ -137,6 +139,8 @@ main{background:#f4f4f4;padding:14px;display:flex;flex-direction:column;gap:20px
 .cat[data-cat="c09"]{--accent:var(--c09);--accent-pale:#dde1e7;--accent-bg:#f8f9fa}
 .cat[data-cat="c10"]{--accent:var(--c10);--accent-pale:#fce7f3;--accent-bg:#fdf2f8}
 .cat[data-cat="c11"]{--accent:var(--c11);--accent-pale:#bae6fd;--accent-bg:#f0f9ff}
+.cat[data-cat="c12"]{--accent:var(--c12);--accent-pale:#ede9fe;--accent-bg:#f5f3ff}
+.cat[data-cat="c13"]{--accent:var(--c13);--accent-pale:#ffe4e6;--accent-bg:#fff1f2}
 .cat-hdr{background:var(--accent-bg)}
 
 /* ════════ LINK CARDS ════════ */
@@ -236,9 +240,11 @@ footer{background:var(--navy);padding:32px 28px;display:flex;align-items:center;
     <a class="sm-item" href="#c06" style="--accent:var(--c06)"><span class="sm-num">06</span><span class="sm-dot" style="background:var(--c06)"></span><span class="sm-name">Shortcut</span></a>
     <a class="sm-item" href="#c07" style="--accent:var(--c07)"><span class="sm-num">07</span><span class="sm-dot" style="background:var(--c07)"></span><span class="sm-name">Audit</span></a>
     <a class="sm-item" href="#c08" style="--accent:var(--c08)"><span class="sm-num">08</span><span class="sm-dot" style="background:var(--c08)"></span><span class="sm-name">Labor</span></a>
-    <a class="sm-item" href="#c09" style="--accent:var(--c09)"><span class="sm-num">09</span><span class="sm-dot" style="background:var(--c09)"></span><span class="sm-name">AI</span></a>
-    <a class="sm-item" href="#c10" style="--accent:var(--c10)"><span class="sm-num">10</span><span class="sm-dot" style="background:var(--c10)"></span><span class="sm-name">AI News</span></a>
-    <a class="sm-item" href="#c11" style="--accent:var(--c11)"><span class="sm-num">11</span><span class="sm-dot" style="background:var(--c11)"></span><span class="sm-name">Misc</span></a>
+    <a class="sm-item" href="#c09" style="--accent:var(--c09)"><span class="sm-num">09</span><span class="sm-dot" style="background:var(--c09)"></span><span class="sm-name">Study</span></a>
+    <a class="sm-item" href="#c10" style="--accent:var(--c10)"><span class="sm-num">10</span><span class="sm-dot" style="background:var(--c10)"></span><span class="sm-name">Role Playing</span></a>
+    <a class="sm-item" href="#c11" style="--accent:var(--c11)"><span class="sm-num">11</span><span class="sm-dot" style="background:var(--c11)"></span><span class="sm-name">AI</span></a>
+    <a class="sm-item" href="#c12" style="--accent:var(--c12)"><span class="sm-num">12</span><span class="sm-dot" style="background:var(--c12)"></span><span class="sm-name">AI News</span></a>
+    <a class="sm-item" href="#c13" style="--accent:var(--c13)"><span class="sm-num">13</span><span class="sm-dot" style="background:var(--c13)"></span><span class="sm-name">Misc</span></a>
   </div>
   <div class="sm-footer">
     <div class="sm-status"><span class="live-dot"></span>System Live — Mishima, JP</div>
@@ -305,9 +311,11 @@ footer{background:var(--navy);padding:32px 28px;display:flex;align-items:center;
   <div class="ftab" data-filter="c06"><span class="fdot" style="background:var(--c06)"></span>Shortcut</div>
   <div class="ftab" data-filter="c07"><span class="fdot" style="background:var(--c07)"></span>Audit</div>
   <div class="ftab" data-filter="c08"><span class="fdot" style="background:var(--c08)"></span>Labor</div>
-  <div class="ftab" data-filter="c09"><span class="fdot" style="background:var(--c09)"></span>AI</div>
-  <div class="ftab" data-filter="c10"><span class="fdot" style="background:var(--c10)"></span>AI News</div>
-  <div class="ftab" data-filter="c11"><span class="fdot" style="background:var(--c11)"></span>Misc</div>
+  <div class="ftab" data-filter="c09"><span class="fdot" style="background:var(--c09)"></span>Study</div>
+  <div class="ftab" data-filter="c10"><span class="fdot" style="background:var(--c10)"></span>Role Playing</div>
+  <div class="ftab" data-filter="c11"><span class="fdot" style="background:var(--c11)"></span>AI</div>
+  <div class="ftab" data-filter="c12"><span class="fdot" style="background:var(--c12)"></span>AI News</div>
+  <div class="ftab" data-filter="c13"><span class="fdot" style="background:var(--c13)"></span>Misc</div>
 </div>
 
 <div id="no-match">— NO RESULTS FOUND —</div>
@@ -322,9 +330,9 @@ footer{background:var(--navy);padding:32px 28px;display:flex;align-items:center;
       <div class="cat-right"><div class="cat-sub">Core Documents</div></div>
     </div>
     <div class="links">
-      <a class="lk" href="https://drive.google.com/drive/folders/1vbjKyYf35QdjU0sgRzKUrKU2zXcQND6E?usp=share_link" data-name="静岡Branch"><div class="lk-top"><div class="lk-name">静岡Branch</div><div class="lk-arr">↗</div></div><div class="lk-dom">drive.google.com</div></a>
+      <a class="lk" href="#" data-name="静岡Branch"><div class="lk-top"><div class="lk-name">静岡Branch</div><div class="lk-arr">↗</div></div><div class="lk-dom">整備中</div></a>
       <a class="lk" href="https://drive.google.com/drive/folders/1P6zOzKkE16aCZRNPgrtzOGFzkl1lH51c?usp=drive_link" target="_blank" rel="noopener" data-name="SL三島BASE"><div class="lk-top"><div class="lk-name">SL三島BASE</div><div class="lk-arr">↗</div></div><div class="lk-dom">drive.google.com</div></a>
-      <a class="lk" href="https://drive.google.com/drive/folders/1fCqNqHGsdcKfYm-jDOE4drGctQutqGDY?usp=drive_link" target="_blank" rel="noopener" data-name="SMARTLIFEAO 静岡三島校"><div class="lk-top"><div class="lk-name">SMART LIFE AO 静岡三島校</div><div class="lk-arr">↗</div></div><div class="lk-dom">drive.google.com</div></a>
+      <a class="lk" href="https://drive.google.com/drive/folders/1fCqNqHGsdcKfYm-jDOE4drGctQutqGDY?usp=drive_link" target="_blank" rel="noopener" data-name="SMART LIFE AO 静岡三島校"><div class="lk-top"><div class="lk-name">SMART LIFE AO 静岡三島校</div><div class="lk-arr">↗</div></div><div class="lk-dom">drive.google.com</div></a>
     </div>
   </div>
 
@@ -425,11 +433,38 @@ footer{background:var(--navy);padding:32px 28px;display:flex;align-items:center;
     </div>
   </div>
 
-  <!-- 09 AI -->
+  <!-- 09 STUDY -->
   <div class="cat" data-cat="c09" id="c09">
     <div class="cat-hdr">
       <div class="cat-bg-num">09</div>
-      <div class="cat-content"><div class="cat-sq"><div class="cat-sq-n">09</div></div><div><div class="cat-eye">// 09 — AI</div><div class="cat-name">AI</div></div></div>
+      <div class="cat-content"><div class="cat-sq"><div class="cat-sq-n">09</div></div><div><div class="cat-eye">// 09 — Study</div><div class="cat-name">STUDY</div></div></div>
+      <div class="cat-right"><div class="cat-sub">Learning</div></div>
+    </div>
+    <div class="links">
+      <a class="lk" href="#" data-name="くらしのデジタル知識トレーニング"><div class="lk-top"><div class="lk-name">くらしのデジタル知識トレーニング</div><div class="lk-arr">↗</div></div><div class="lk-dom">整備中</div></a>
+      <a class="lk" href="#" data-name="プロダクトテスト"><div class="lk-top"><div class="lk-name">プロダクトテスト</div><div class="lk-arr">↗</div></div><div class="lk-dom">整備中</div></a>
+    </div>
+  </div>
+
+  <!-- 10 ROLE PLAYING -->
+  <div class="cat" data-cat="c10" id="c10">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">10</div>
+      <div class="cat-content"><div class="cat-sq"><div class="cat-sq-n">10</div></div><div><div class="cat-eye">// 10 — Role Playing</div><div class="cat-name">ROLE PLAYING</div></div></div>
+      <div class="cat-right"><div class="cat-sub">Training</div></div>
+    </div>
+    <div class="links">
+      <a class="lk" href="#" data-name="積み木"><div class="lk-top"><div class="lk-name">積み木</div><div class="lk-arr">↗</div></div><div class="lk-dom">整備中</div></a>
+      <a class="lk" href="#" data-name="媒体指差し"><div class="lk-top"><div class="lk-name">媒体指差し</div><div class="lk-arr">↗</div></div><div class="lk-dom">整備中</div></a>
+      <a class="lk" href="#" data-name="FASIL"><div class="lk-top"><div class="lk-name">FASIL</div><div class="lk-arr">↗</div></div><div class="lk-dom">整備中</div></a>
+    </div>
+  </div>
+
+  <!-- 11 AI -->
+  <div class="cat" data-cat="c11" id="c11">
+    <div class="cat-hdr">
+      <div class="cat-bg-num">11</div>
+      <div class="cat-content"><div class="cat-sq"><div class="cat-sq-n">11</div></div><div><div class="cat-eye">// 11 — AI</div><div class="cat-name">AI</div></div></div>
       <div class="cat-right"><div class="cat-sub">AI / LLM</div></div>
     </div>
     <div class="links">
@@ -442,11 +477,11 @@ footer{background:var(--navy);padding:32px 28px;display:flex;align-items:center;
     </div>
   </div>
 
-  <!-- 10 AI NEWS -->
-  <div class="cat" data-cat="c10" id="c10">
+  <!-- 12 AI NEWS -->
+  <div class="cat" data-cat="c12" id="c12">
     <div class="cat-hdr">
-      <div class="cat-bg-num">10</div>
-      <div class="cat-content"><div class="cat-sq"><div class="cat-sq-n">10</div></div><div><div class="cat-eye">// 10 — AI News</div><div class="cat-name">AI NEWS</div></div></div>
+      <div class="cat-bg-num">12</div>
+      <div class="cat-content"><div class="cat-sq"><div class="cat-sq-n">12</div></div><div><div class="cat-eye">// 12 — AI News</div><div class="cat-name">AI NEWS</div></div></div>
       <div class="cat-right"><div class="cat-sub">Media / Tech</div></div>
     </div>
     <div class="links">
@@ -457,11 +492,11 @@ footer{background:var(--navy);padding:32px 28px;display:flex;align-items:center;
     </div>
   </div>
 
-  <!-- 11 MISC -->
-  <div class="cat" data-cat="c11" id="c11">
+  <!-- 13 MISC -->
+  <div class="cat" data-cat="c13" id="c13">
     <div class="cat-hdr">
-      <div class="cat-bg-num">11</div>
-      <div class="cat-content"><div class="cat-sq"><div class="cat-sq-n">11</div></div><div><div class="cat-eye">// 11 — Misc</div><div class="cat-name">MISC</div></div></div>
+      <div class="cat-bg-num">13</div>
+      <div class="cat-content"><div class="cat-sq"><div class="cat-sq-n">13</div></div><div><div class="cat-eye">// 13 — Misc</div><div class="cat-name">MISC</div></div></div>
       <div class="cat-right"><div class="cat-sub">Others</div></div>
     </div>
     <div class="links">
