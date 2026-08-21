@@ -652,6 +652,10 @@ function renderAnnouncements(){
    ・表示件数や切り替え間隔は下の変数で調整できます
    ・他のニュース源に変えたい場合は AI_NEWS_RSS_URL のURLを
      差し替えるだけでOKです
+   ・表示させたくない記事がある場合は、少し下にある
+     NEWS_BLOCKLIST にキーワードを追加してください
+     （タイトル・本文・URLにそのキーワードを含む記事は
+     自動的に非表示になります）
 ═══════════════════════════════════════════════════ */
 const AI_NEWS_RSS_URL = 'https://rss.itmedia.co.jp/rss/2.0/aiplus.xml';
 const RSS2JSON_ENDPOINT = 'https://api.rss2json.com/v1/api.json?rss_url=';
@@ -659,6 +663,19 @@ const NEWS_ROTATE_INTERVAL = 6000; // ニュース切り替え間隔（ミリ秒
 let newsItems = [];
 let newsIndex = 0;
 let newsRotateTimer = null;
+
+/* ─────────────────────────────────────────────────
+   表示させたくないニュースを除外するフィルター
+   タイトル・本文・リンクURLに以下のキーワードが
+   含まれる記事は自動的に非表示にします
+   ───────────────────────────────────────────────── */
+const NEWS_BLOCKLIST = [
+  'FANZA', 'DMM.R18', 'アダルト', 'AV女優', 'アイドル水着',
+];
+function isBlockedNewsItem(item){
+  const text = `${item.title||''} ${item.description||''} ${item.link||''}`;
+  return NEWS_BLOCKLIST.some(word => text.includes(word));
+}
 
 async function fetchAiNews(){
   const textEl = document.getElementById('banner-news-text');
@@ -668,7 +685,10 @@ async function fetchAiNews(){
     if(data.status !== 'ok' || !data.items || !data.items.length){
       throw new Error('no items');
     }
-    newsItems = data.items.slice(0, 8);
+    newsItems = data.items.filter(item => !isBlockedNewsItem(item)).slice(0, 8);
+    if(!newsItems.length){
+      throw new Error('all items blocked');
+    }
     newsIndex = 0;
     showNewsItem();
     if(newsRotateTimer) clearInterval(newsRotateTimer);
@@ -718,7 +738,7 @@ const dajareList = [
   'かまぼこが構わない子', 'かっぱ巻きにかっぱ来い', 'メロンが目論む',
   'たまねぎが多滝木', 'アサリが浅い', 'エビフライが得ビフライ', 'かつおぶし勝男節',
   '布団のふとどき', 'キャベツがきゃべつ', 'コロッケがころっとけ', 'サンマがさんまー',
-  'しいたけしいたけ', 'ズッキーニずっきー似', 'セロリせろりん', 'そら豆それだ',
+  'しいたけしいたけ', '納豆君納得', 'セロリせろりん', 'そら豆それだ',
   'たらこたらこう', 'なすなすびー', 'にんじんにんじんじゃー', 'ねぎねぎねぎない',
   'はくさいはっくしょい', 'ひじきひじょうき', 'ふきのとうふきとーん', 'ほうれん草ほれんそ',
   'まいたけまいっか', 'みかんみかんみっかん', 'もやしもやっし', 'れんこんれんこんこん',
